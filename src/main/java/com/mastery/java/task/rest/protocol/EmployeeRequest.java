@@ -1,11 +1,9 @@
 package com.mastery.java.task.rest.protocol;
 
-import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 
-@Builder
 @Data
 public class EmployeeRequest {
     private String firstName;
