@@ -15,8 +15,8 @@ import java.util.Optional;
 @Repository
 public class EmployeeDao implements IEmployeeDao {
 
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     @Autowired
     public EmployeeDao(JdbcTemplate jdbcTemplate) {
@@ -26,7 +26,8 @@ public class EmployeeDao implements IEmployeeDao {
                 .usingGeneratedKeyColumns("employee_id");
     }
 
-    public Employee saveEmployee(Employee employee) {
+    @Override
+    public Employee save(Employee employee) {
         Map<String, Object> params = new HashMap<>();
         params.put("employee_id", null);
         params.put("first_name", employee.getFirstName());
@@ -42,13 +43,13 @@ public class EmployeeDao implements IEmployeeDao {
     }
 
     @Override
-    public void deleteDismissedEmployeeById(long id) {
+    public void deleteById(long id) {
         String sql = "DELETE FROM employee WHERE employee_id = ?";
         jdbcTemplate.update(sql, id);
     }
 
     @Override
-    public Employee updateEmployeeById(Employee employee, long id) {
+    public Employee updateById(Employee employee, long id) {
         jdbcTemplate.update("UPDATE employee SET " +
                         "first_name = ?, " +
                         "last_name = ?, " +
@@ -69,14 +70,14 @@ public class EmployeeDao implements IEmployeeDao {
     }
 
     @Override
-    public List<Employee> findAllEmployee() {
+    public List<Employee> findAll() {
         String sql = "SELECT * FROM employee ORDER BY employee_id";
         return jdbcTemplate.query(sql, new EmployeeRowMapper());
     }
 
     @Override
-    public Optional findById(long id) {
+    public Optional<Employee> findById(long id) {
         String sql = "SELECT *  FROM employee WHERE employee_id = ?";
-        return jdbcTemplate.query(sql, new Object[]{id}, new EmployeeRowMapper()).stream().findFirst();
+        return Optional.of(jdbcTemplate.query(sql, new EmployeeRowMapper(), new Object[]{id}).get(0));
     }
 }
