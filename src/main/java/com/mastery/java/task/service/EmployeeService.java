@@ -1,6 +1,6 @@
 package com.mastery.java.task.service;
 
-import com.mastery.java.task.dao.EmployeeDao;
+import com.mastery.java.task.dao.EmployeeDaoImpl;
 import com.mastery.java.task.dto.Employee;
 import com.mastery.java.task.mapper.EmployeeMapper;
 import com.mastery.java.task.rest.protocol.EmployeeRequest;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class EmployeeService {
 
-    private final EmployeeDao employeeDao;
+    private final EmployeeDaoImpl employeeDao;
     private final EmployeeMapper employeeMapper;
 
     public EmployeeResponse save(EmployeeRequest employeeRequest) {
@@ -41,7 +41,8 @@ public class EmployeeService {
     }
 
     public EmployeeResponse findById(long id) {
-        Employee employee = employeeDao.findById(id).orElseThrow(NoSuchElementException::new);
+        Employee employee = employeeDao.findById(id)
+                .orElseThrow(NoSuchElementException::new);
         return employeeMapper.mapToResponse(employee);
     }
 

@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Data
 public class EmployeeResponse {
-
+    private Long employeeId;
     private String firstName;
     private String lastName;
     private int departmentId;
