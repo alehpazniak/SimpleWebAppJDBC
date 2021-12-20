@@ -2,7 +2,8 @@ package com.mastery.java.task.dao;
 
 import com.mastery.java.task.dto.Employee;
 import com.mastery.java.task.mapper.EmployeeRowMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -12,19 +13,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Repository
 public class EmployeeDao implements IEmployeeDao {
 
+    @Value("${app.simplewebapp.database.sql.UPDATE_SQL}")
+    private String UPDATE_SQL;
+    @Value("${app.simplewebapp.database.sql.DELETE_SQL}")
+    private String DELETE_SQL;
+    @Value("${app.simplewebapp.database.sql.FIND_ALL_SQL}")
+    private String FIND_ALL_SQL;
+    @Value("${app.simplewebapp.database.sql.FIND_BY_ID_SQL}")
+    private String FIND_BY_ID_SQL;
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
-
-    @Autowired
-    public EmployeeDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("employee")
-                .usingGeneratedKeyColumns("employee_id");
-    }
 
     @Override
     public Employee save(Employee employee) {
@@ -44,20 +47,12 @@ public class EmployeeDao implements IEmployeeDao {
 
     @Override
     public void deleteById(long id) {
-        String sql = "DELETE FROM employee WHERE employee_id = ?";
-        jdbcTemplate.update(sql, id);
+        jdbcTemplate.update(DELETE_SQL, id);
     }
 
     @Override
     public Employee updateById(Employee employee, long id) {
-        jdbcTemplate.update("UPDATE employee SET " +
-                        "first_name = ?, " +
-                        "last_name = ?, " +
-                        "department_id = ?, " +
-                        "job_title = ?, " +
-                        "gender = ?, " +
-                        "date_of_birth = ? " +
-                        "WHERE employee_id = ?",
+        jdbcTemplate.update(UPDATE_SQL,
                 employee.getFirstName(),
                 employee.getLastName(),
                 employee.getDepartmentId(),
@@ -71,13 +66,11 @@ public class EmployeeDao implements IEmployeeDao {
 
     @Override
     public List<Employee> findAll() {
-        String sql = "SELECT * FROM employee ORDER BY employee_id";
-        return jdbcTemplate.query(sql, new EmployeeRowMapper());
+        return jdbcTemplate.query(FIND_ALL_SQL, new EmployeeRowMapper());
     }
 
     @Override
     public Optional<Employee> findById(long id) {
-        String sql = "SELECT *  FROM employee WHERE employee_id = ?";
-        return Optional.of(jdbcTemplate.query(sql, new EmployeeRowMapper(), new Object[]{id}).get(0));
+        return Optional.of(jdbcTemplate.query(FIND_BY_ID_SQL, new EmployeeRowMapper(), new Object[]{id}).get(0));
     }
 }

@@ -25,6 +25,7 @@ public class EmployeeMapper {
 
     public EmployeeResponse mapToResponse(Employee employee) {
         EmployeeResponse employeeResponse = new EmployeeResponse();
+        employeeResponse.setEmployeeId(employee.getEmployeeId());
         employeeResponse.setFirstName(employee.getFirstName());
         employeeResponse.setLastName(employee.getLastName());
         employeeResponse.setDepartmentId(employee.getDepartmentId());

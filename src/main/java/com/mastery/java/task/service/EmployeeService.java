@@ -41,7 +41,8 @@ public class EmployeeService {
     }
 
     public EmployeeResponse findById(long id) {
-        Employee employee = employeeDao.findById(id).orElseThrow(NoSuchElementException::new);
+        Employee employee = employeeDao.findById(id)
+                .orElseThrow(NoSuchElementException::new);
         return employeeMapper.mapToResponse(employee);
     }
 

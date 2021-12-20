@@ -11,7 +11,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/employee")
+@RequestMapping(value = "/employees")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -32,7 +32,7 @@ public class EmployeeController {
         return employeeService.updateById(employeeRequest, id);
     }
 
-    @GetMapping("/all-employees")
+    @GetMapping("/all")
     public List<EmployeeResponse> getAllEmployee() {
         return employeeService.findAll();
     }
