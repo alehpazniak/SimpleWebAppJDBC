@@ -5,12 +5,10 @@ import com.mastery.java.task.mapper.EmployeeRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
+import java.sql.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -25,29 +23,19 @@ public class EmployeeDaoImpl implements EmployeeDao {
     private String FIND_ALL_SQL;
     @Value("${app.simplewebapp.database.sql.FIND_BY_ID_SQL}")
     private String FIND_BY_ID_SQL;
+    @Value("${app.simplewebapp.database.sql.INSERT_SQL}")
+    private String INSERT_SQL;
 
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert simpleJdbcInsert;
 
     @Override
-    public Employee save(Employee employee) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("employee_id", null);
-        params.put("first_name", employee.getFirstName());
-        params.put("last_name", employee.getLastName());
-        params.put("department_id", employee.getDepartmentId());
-        params.put("job_title", employee.getJobTitle());
-        params.put("gender", employee.getGender().toString().toUpperCase());
-        params.put("date_of_birth", employee.getDateOfBirth());
-
-        long generateId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        employee.setEmployeeId(generateId);
-        return employee;
+    public Optional<Employee> findById(long id) {
+        return Optional.of(jdbcTemplate.query(FIND_BY_ID_SQL, new EmployeeRowMapper(), new Object[]{id}).get(0));
     }
 
     @Override
-    public void deleteById(long id) {
-        jdbcTemplate.update(DELETE_SQL, id);
+    public List<Employee> findAll() {
+        return jdbcTemplate.query(FIND_ALL_SQL, new EmployeeRowMapper());
     }
 
     @Override
@@ -58,19 +46,26 @@ public class EmployeeDaoImpl implements EmployeeDao {
                 employee.getDepartmentId(),
                 employee.getJobTitle(),
                 employee.getGender().name(),
-                employee.getDateOfBirth(),
+                Date.valueOf(employee.getDateOfBirth()),
                 id);
         employee.setEmployeeId(id);
         return employee;
     }
 
     @Override
-    public List<Employee> findAll() {
-        return jdbcTemplate.query(FIND_ALL_SQL, new EmployeeRowMapper());
+    public Employee save(Employee employee) {
+        jdbcTemplate.update(INSERT_SQL,
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getDepartmentId(),
+                employee.getJobTitle(),
+                employee.getGender().name(),
+                Date.valueOf(employee.getDateOfBirth()));
+        return employee;
     }
 
     @Override
-    public Optional<Employee> findById(long id) {
-        return Optional.of(jdbcTemplate.query(FIND_BY_ID_SQL, new EmployeeRowMapper(), new Object[]{id}).get(0));
+    public void deleteById(long id) {
+        jdbcTemplate.update(DELETE_SQL, id);
     }
 }

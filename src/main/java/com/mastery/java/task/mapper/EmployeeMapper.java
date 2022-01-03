@@ -4,10 +4,8 @@ import com.mastery.java.task.dto.Employee;
 import com.mastery.java.task.dto.Gender;
 import com.mastery.java.task.rest.protocol.EmployeeRequest;
 import com.mastery.java.task.rest.protocol.EmployeeResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
 @Component
 public class EmployeeMapper {
 
@@ -21,7 +19,6 @@ public class EmployeeMapper {
         employee.setJobTitle(employeeRequest.getJobTitle());
         return employee;
     }
-
 
     public EmployeeResponse mapToResponse(Employee employee) {
         EmployeeResponse employeeResponse = new EmployeeResponse();
