@@ -1,6 +1,5 @@
 package com.mastery.java.task.rest;
 
-
 import com.mastery.java.task.rest.protocol.EmployeeRequest;
 import com.mastery.java.task.rest.protocol.EmployeeResponse;
 import com.mastery.java.task.service.EmployeeService;
@@ -16,30 +15,30 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @PostMapping()
-    public EmployeeResponse addEmployee(@RequestBody EmployeeRequest employeeRequest) {
-        return employeeService.save(employeeRequest);
+    @GetMapping("/{id}")
+    public EmployeeResponse getById(@PathVariable long id) {
+        return employeeService.findById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteEmployee(@PathVariable(value = "id") long id) {
-        employeeService.deleteById(id);
-    }
-
-    @PutMapping("/{id}")
-    public EmployeeResponse updateEmployeeById(@RequestBody EmployeeRequest employeeRequest,
-                                               @PathVariable(value = "id") long id) {
-        return employeeService.updateById(employeeRequest, id);
-    }
-
-    @GetMapping("/all")
-    public List<EmployeeResponse> getAllEmployee() {
+    @GetMapping
+    public List<EmployeeResponse> getAll() {
         return employeeService.findAll();
     }
 
-    @GetMapping("/{id}")
-    public EmployeeResponse getEmployeeById(@PathVariable(value = "id") long id) {
-        return employeeService.findById(id);
+    @PostMapping
+    public EmployeeResponse add(@RequestBody EmployeeRequest employeeRequest) {
+        return employeeService.save(employeeRequest);
+    }
+
+    @PutMapping("/{id}")
+    public EmployeeResponse updateById(@RequestBody EmployeeRequest employeeRequest,
+                                       @PathVariable long id) {
+        return employeeService.updateById(employeeRequest, id);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable long id) {
+        employeeService.deleteById(id);
     }
 
 }
